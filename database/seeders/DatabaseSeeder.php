@@ -18,5 +18,16 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+
+        $this->call([
+        ExameSeeder::class,
+        PacoteSeeder::class,
+        ]);
+
+        // Relaciona exame ao pacote
+        $exame = \App\Models\Exame::first();
+        $pacote = \App\Models\Pacote::first();
+        $exame->pacotes()->attach($pacote->id);
+        
     }
 }
