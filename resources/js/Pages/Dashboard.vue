@@ -1,9 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+
 import { Head } from '@inertiajs/vue2';
 </script>
 
 <template>
+    <div>
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
@@ -18,5 +21,13 @@ import { Head } from '@inertiajs/vue2';
                 </div>
             </div>
         </div>
+        <PrimaryButton>dfgdfgdf</PrimaryButton>
+        <div>
+  <b-button>Button</b-button>
+  <b-button variant="danger">Button</b-button>
+  <b-button variant="success">Button</b-button>
+  <b-button variant="outline-primary">Button</b-button>
+</div>
     </AuthenticatedLayout>
+</div>
 </template>

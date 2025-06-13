@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use app\Models\Pacote;
 
 class PacoteSeeder extends Seeder
 {
@@ -12,7 +14,7 @@ class PacoteSeeder extends Seeder
      */
     public function run(): void
     {
-        Pacote::create([
+        \App\Models\Pacote::create([
             'name' => 'Pacote Completo 1',
             'observations' => 'Inclui todos os exames básicos.'
         ]);

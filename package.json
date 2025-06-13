@@ -19,6 +19,9 @@
     },
     "dependencies": {
         "@mdi/font": "^7.2.96",
+        "bootstrap": "^4.6.2",
+        "bootstrap-vue": "^2.23.1",
+        "jquery": "^3.7.1",
         "sass": "^1.32.12",
         "vuetify": "^2.6.15",
         "vuetify2-component-types": "^2.6.8"
