@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Exame;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ExameController extends Controller
 {
     public function index()
     {
-        return Exame::with('pacotes')->get();
+        //return Exame::with('pacotes')->get();
+
+       return DB::table('exames')->get();
+ 
     }
 
     public function store(Request $request)

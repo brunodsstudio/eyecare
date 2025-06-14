@@ -23,6 +23,9 @@ importers:
       sass:
         specifier: ^1.32.12
         version: 1.89.2
+      vuetable-2:
+        specifier: 2.0.0-beta.4
+        version: 2.0.0-beta.4
       vuetify:
         specifier: ^2.6.15
         version: 2.7.2(vue@2.7.16)
@@ -403,6 +406,10 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
 
+  axios@0.15.3:
+    resolution: {integrity: sha512-w3/VNaraEcDri16lbemQWQGKfaFk9O0IZkzKlLeF5r6WWDv9TkcXkP+MWkRK8FbxwfozY/liI+qtvhV295t3HQ==}
+    deprecated: Critical security vulnerability fixed in v0.21.1. For more information, see https://github.com/axios/axios/pull/3410
+
   axios@1.9.0:
     resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
 
@@ -491,6 +498,14 @@ packages:
   csstype@3.1.3:
     resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
+  debug@2.6.9:
+    resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+
   deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
@@ -561,6 +576,9 @@ packages:
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
+
+  follow-redirects@1.0.0:
+    resolution: {integrity: sha512-7s+wBk4z5xTwVJuozRBAyRofWKjD3uG2CUjZfZTrw9f+f+z8ZSxOjAqfIDLtc0Hnz+wGK2Y8qd93nGGjXBYKsQ==}
 
   follow-redirects@1.15.9:
     resolution: {integrity: sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==}
@@ -724,6 +742,9 @@ packages:
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  ms@2.0.0:
+    resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
 
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
@@ -1032,6 +1053,10 @@ packages:
     resolution: {integrity: sha512-4gCtFXaAA3zYZdTp5s4Hl2sozuySsgz4jy1EnpBHNfpMa9dK1ZCG7viqBPCwXtmgc8nHqUsAu3G4gtmXkkY3Sw==}
     deprecated: Vue 2 has reached EOL and is no longer actively maintained. See https://v2.vuejs.org/eol/ for more details.
 
+  vuetable-2@2.0.0-beta.4:
+    resolution: {integrity: sha512-sWSdKIPYiATI9hOuPlQ09iSWEFAfhe6sPovl4hK2SemvqvgxLIF8UjG3LwJJC7idWS9UPpK9fRrSXoFJhRcluQ==}
+    engines: {node: '>= 4.0.0', npm: '>= 3.0.0'}
+
   vuetify2-component-types@2.7.2:
     resolution: {integrity: sha512-nAslpNsFwZJJ4VnkjtVg9HwLWDj+JQl8Eild/IqVtJac1QRll4ldA5e92haXoSCDj6gRGLlzf8SuEytjVT9YYw==}
     peerDependencies:
@@ -1329,6 +1354,12 @@ snapshots:
       postcss: 8.5.5
       postcss-value-parser: 4.2.0
 
+  axios@0.15.3:
+    dependencies:
+      follow-redirects: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
+
   axios@1.9.0:
     dependencies:
       follow-redirects: 1.15.9
@@ -1432,6 +1463,10 @@ snapshots:
 
   csstype@3.1.3: {}
 
+  debug@2.6.9:
+    dependencies:
+      ms: 2.0.0
+
   deepmerge@4.3.1: {}
 
   delayed-stream@1.0.0: {}
@@ -1514,6 +1549,12 @@ snapshots:
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
+
+  follow-redirects@1.0.0:
+    dependencies:
+      debug: 2.6.9
+    transitivePeerDependencies:
+      - supports-color
 
   follow-redirects@1.15.9: {}
 
@@ -1656,6 +1697,8 @@ snapshots:
       brace-expansion: 2.0.2
 
   minipass@7.1.2: {}
+
+  ms@2.0.0: {}
 
   mz@2.7.0:
     dependencies:
@@ -1940,6 +1983,12 @@ snapshots:
     dependencies:
       '@vue/compiler-sfc': 2.7.16
       csstype: 3.1.3
+
+  vuetable-2@2.0.0-beta.4:
+    dependencies:
+      axios: 0.15.3
+    transitivePeerDependencies:
+      - supports-color
 
   vuetify2-component-types@2.7.2(vue@2.7.16):
     dependencies:
