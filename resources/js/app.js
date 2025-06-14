@@ -5,7 +5,7 @@ import Vue from 'vue';
 import Vuetify from 'vuetify';
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/dist/vuetify.min.css';
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import { BootstrapVue, IconsPlugin, BootstrapVueIcons } from 'bootstrap-vue'
 
 import { createInertiaApp } from '@inertiajs/vue2';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -35,8 +35,9 @@ createInertiaApp({
         Vue.use(plugin);
         Vue.use(ZiggyVue, Ziggy);
         Vue.use(Vuetify);
-        Vue.use(BootstrapVue)
-        Vue.use(IconsPlugin)
+        Vue.use(BootstrapVue);
+        Vue.use(IconsPlugin);
+        Vue.use(BootstrapVueIcons);
         return new Vue({ render: h => h(App, props), vuetify }).$mount(el);
     },
     progress: {

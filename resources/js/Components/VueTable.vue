@@ -1,10 +1,17 @@
 <template>
+  <div>
   <vuetable
     :fields="fields"
     :api-url="apiUrl"
     :sort-by="sortBy"
     :per-page="perPage"
+    data-path=""
+    pagination-path=""
   />
+
+  </vuetable>
+</div>
+
 </template>
 
 <script>
@@ -21,7 +28,8 @@ export default {
         { name: 'name', title: 'Name' },
         { name: 'laterality', title: 'laterality' },
         { name: 'group', title: 'group' },
-        { name: 'comment', title: 'comment' }
+        { name: 'comment', title: 'comment' },
+        
       ],
       sortBy: 'name',
       perPage: 10
