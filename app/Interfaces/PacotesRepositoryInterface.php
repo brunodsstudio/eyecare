@@ -7,9 +7,12 @@ use Illuminate\Support\Collection;
 
 interface PacotesRepositoryInterface
 {
-    public function getPacotes(int|null $id): Collection;
-    public function createPacotes(array $newPacotes): Model;
-    public function updatePacotes($PacotesId, array $newPacotes): void;
-    public function removePacotes($PacotesId): void;
+    public function all();
+    public function get(int $id);
+    public function store(array $aStore);
+    public function update(int $id, array $aUpdate);
+    public function remove(int $id);
 
+    public function storePacoteExame(array $info);
+    public function removePacoteExame(int $id);
 }

@@ -23,7 +23,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('exames', ExameController::class);
 Route::apiResource('pacotes', PacoteController::class);
 
-// Relacionamento: Associar exame a pacote
-Route::post('/pacotes/{pacote}/attach-exame', [PacoteController::class, 'attachExame']);
 
+Route::get('/examesAvulsos', [ExameController::class, 'examesAvulsos']);
+
+
+// Relacionamento: Associar exame a pacote
+Route::post('/pacotes/remove-exame', [PacoteController::class, 'removePacoteExame']);
+Route::post('/pacotes/{pacote}/attach-exame', [PacoteController::class, 'attachExame']);
+Route::post('/storePacoteExameAvulso', [PacoteController::class, 'storePacoteExameAvulso']);
+
+
+Route::post('/pacotes/{pacote}', [PacoteController::class, 'show']);
+
+Route::get('/printpacote/{id}', [PacoteController::class, 'printPacote']);
 

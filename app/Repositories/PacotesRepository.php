@@ -3,41 +3,144 @@
 namespace App\Repositories;
 
 use App\Interfaces\PacotesRepositoryInterface;
-use App\Models\Pacotes;
+use App\Models\Pacote;
+use App\Models\Exame;
+use App\Models\ExamePacote;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class PacotesRepository implements PacotesRepositoryInterface
 {
   
- public function getPacotess(int|null $id): Collection
+ public function get(int $id)
  {
-     return isset($id) ?  Pacotes::where('id', $id)->get() : Pacotes::where('menu', 1)->get() ;
+     return Pacote::with('exames')->where('id', $id)->get() ;
  }
 
- public function  getAllPacotesMateria(): Collection
+ public function all()
  {
-     return Pacotes::where('menu', '>=' , 0)->get();
+     return Pacote::with('exames')->orderBy("pacotes.name")->get() ;
+    //  return DB::table('pacotes')->get();
  }
 
-
-
- public function getPacotessCategoria(int|null $id): Collection
+ public function store(array $newPacotes)
  {
-     //return isset($id) ?  Pacotes::where('id', $id)->get() : Pacotes::all();
+     return Pacote::create($newPacotes);
  }
 
- public function createPacotes(array $newPacotes): Pacotes
+ public function update(int $PacotesId, array $newPacotes)
  {
-     return Pacotes::create($newPacotes);
+     return Pacote::whereId($PacotesId)->update($newPacotes);
  }
 
- public function updatePacotes($PacotesId, array $newPacotes): void
+ public function remove(int $PacotesId)
  {
-     Pacotes::whereId($PacotesId)->update($newPacotes);
+    $status = false;
+     if(ExamePacote::where("idPacote" ,"=", $PacotesId)->delete()){
+        Pacote::destroy($PacotesId);
+        $status = true;
+        return $status; 
+     } else {
+        Pacote::destroy($PacotesId);
+        $status = true;
+        return $status; 
+     }  
+      return $status; 
+    
+     
+ }
+      
+ public function storePacoteExame($info)
+ {
+    
+       $groups =  DB::select( "select * FROM exame_pacote where idPacote = '$info->idPacote' and idExame = '$info->idExame'");
+
+       $in = array(
+        "idPacote"=> $info->idPacote,
+        "idExame"=> $info->idExame
+       );
+        
+         if(empty($groups)){
+            $res =  ExamePacote::create($in);
+         } else {
+            $res = false;
+         }
+
+       return $res;
  }
 
- public function removePacotes($PacotesId): void
+ public function storePacoteExameAvulso($info)
  {
-     Pacotes::destroy($PacotesId);
+   
+        $pv = array(
+        "name"=> "Avulso",
+        "observations"=> "Avulso"
+       );
+        
+       $res  =  Pacote::create($pv);
+
+      
+
+        $in = array(
+        "idPacote"=>  $res->id,
+        "idExame"=> $info['idExame']
+       );
+
+        
+        
+         if(empty($groups)){
+            $res =  ExamePacote::create($in);
+         } else {
+            $res = false;
+         }
+
+       return $res;
  }
+
+public function removePacoteExame($info)
+
+ {
+      return  ExamePacote::destroy($info->id);
+ }
+
+ public function printPacoteExame(int $id){
+
+    $groups =  DB::select( "SELECT distinct(exames.`group`) FROM exames");
+    
+
+     $examesPacote =  DB::select( "SELECT p.name as exameNome, p.observations, p.created_at, e.* FROM exame_pacote ep 
+        LEFT JOIN exames e 
+        ON e.id = ep.idExame
+        LEFT JOIN pacotes p
+        on p.id = ep.idPacote
+        WHERE ep.idPacote =" . $id);
+
+      
+
+        $pacotes = [];
+         $pacotes['header']['name'] = $examesPacote[0]->exameNome;
+         $pacotes['header']['observations'] = $examesPacote[0]->observations;
+        $pacotes['header']['created_at'] = $examesPacote[0]->created_at;
+        foreach($groups as $g){
+            foreach($examesPacote as $pe){
+                if($pe->group == $pe->group){
+                     $info = array(
+                        "id" => $pe->name,
+                        "laterality"=> $pe->laterality,
+                        "comment" => $pe->comment,
+                     );
+                    if($pe->group == "Individual"){
+                        $pacotes["Exames Avulsos"][$pe->id] = $info ;
+                    } else {
+                        $pacotes[$pe->group][$pe->id]= $info ;
+                    }
+                }
+            }
+        }
+
+        
+    return $pacotes;
+
+
+}
 }

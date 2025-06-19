@@ -3,41 +3,40 @@
 namespace App\Repositories;
 
 use App\Interfaces\ExamesRepositoryInterface;
-use App\Models\Exames;
-use Illuminate\Support\Collection;
+use App\Models\Exame;
+use Illuminate\Support\Facades\DB;
 
 class ExamesRepository implements ExamesRepositoryInterface
 {
   
- public function getExamess(int|null $id): Collection
+ public function get(int $id)
  {
-     return isset($id) ?  Exames::where('id', $id)->get() : Exames::where('menu', 1)->get() ;
+     return Exame::where('id', $id)->get() ;
  }
 
- public function  getAllExamesMateria(): Collection
+ public function all()
  {
-     return Exames::where('menu', '>=' , 0)->get();
+      return DB::table('exames')->get();
  }
 
+  public function examesAvulsos(){
+    return DB::table('exames')->where("group", "=", "Individual")->get();
+  }
 
-
- public function getExamessCategoria(int|null $id): Collection
+ public function store(array $newExames)
  {
-     //return isset($id) ?  Exames::where('id', $id)->get() : Exames::all();
+     return Exame::create($newExames);
  }
 
- public function createExames(array $newExames): Exames
+ public function update(int $ExamesId, array $newExames)
  {
-     return Exames::create($newExames);
+     return Exame::whereId($ExamesId)->update($newExames);
  }
 
- public function updateExames($ExamesId, array $newExames): void
+ public function remove(int $ExamesId)
  {
-     Exames::whereId($ExamesId)->update($newExames);
- }
-
- public function removeExames($ExamesId): void
- {
-     Exames::destroy($ExamesId);
+        
+     Exame::destroy($ExamesId);
+     return response()->noContent();
  }
 }

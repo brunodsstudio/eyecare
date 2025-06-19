@@ -31,7 +31,13 @@ Route::get('/dashboard', function () {
 
 Route::get('/Exames', function () {
     return Inertia::render('Exames');
-})->name('Exames'); //middleware(['auth', 'verified'])->
+})->name('Exames'); 
+
+Route::get('/PrintPDF', function () {
+    return Inertia::render('PrintPDF');
+})->name('PrintPDF');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

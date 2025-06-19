@@ -23,40 +23,36 @@ class ExamesService
      */
     public function __construct(ExamesRepository $ExamesRepository)
     {
-        $this->EventoRepository= $EventoRepository;
+        $this->ExamesRepository= $ExamesRepository;
+    }
+   
+    public function all()
+    {
+        return $this->ExamesRepository->all();
     }
 
-    /**
-     * Get all Materias.
-     *
-     * @return Collection
-     *
-     */
-    /*public function getAll(): Collection
+    public function get(int $id)
     {
-        return $this->EventoRepository->getAllEventos(null);
+        return $this->ExamesRepository->all($id);
+    }  
+    
+    public function examesAvulsos()
+    {
+        return $this->ExamesRepository->examesAvulsos();
     }
-
-    public function getId(int $id): Collection
+    
+    public function store(array $info)
     {
-
+        return $this->ExamesRepository->store($info);
     }
-    public function getName(string $name): Collection
+    public function update(int $id, array $info)
     {
-        
+        return $this->ExamesRepository->update($id, $info);
     }
-    public function setEvento(array $info):bool
+    public function remove(int $id)
     {
-
+        return $this->ExamesRepository->remove($id);
     }
-    public function updateEvento(array $info):bool
-    {
-
-    }
-    public function deleteEvento(array $info):bool
-    {
-
-    }*/
 
 
 }

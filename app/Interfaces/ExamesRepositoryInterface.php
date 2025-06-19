@@ -7,9 +7,9 @@ use Illuminate\Support\Collection;
 
 interface ExamesRepositoryInterface
 {
-    public function getExames(int|null $id): Collection;
-    public function createExames(array $newExames): Model;
-    public function updateExames($ExamesId, array $newExames): void;
-    public function removeExames($ExamesId): void;
-
+    public function all();
+    public function get(int $id);
+    public function store(array $aStore);
+    public function update(int $id, array $aUpdate);
+    public function remove(int $id);
 }

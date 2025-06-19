@@ -21,6 +21,7 @@
         "@mdi/font": "^7.2.96",
         "bootstrap": "^4.6.2",
         "bootstrap-vue": "^2.23.1",
+        "html2pdf.js": "^0.10.3",
         "jquery": "^3.7.1",
         "sass": "^1.32.12",
         "vuetable-2": "2.0.0-beta.4",

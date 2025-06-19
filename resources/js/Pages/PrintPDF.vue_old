@@ -1,0 +1,201 @@
+<template>
+  <div>
+    <b-button variant="primary" @click="gerarPDF">Imprimir PDF</b-button>
+
+    <!-- Conteúdo do PDF -->
+    <div id="pdf-content" style="display: block">
+      <div v-for="pacote in pacotes" :key="pacote.id">
+        <div
+          v-for="(grupo, index) in agruparExames(pacote.exames)"
+          :key="index"
+          class="pagina-pdf"
+        >
+          <!-- Cabeçalho -->
+          <div class="header">
+            <img :src="logoUrl" alt="Logo" style="width: 80px;" />
+            <div>
+              <h5>Paciente: {{ paciente.nome }}</h5>
+              <p>CPF: {{ paciente.cpf }}</p>
+              <p>Médico: {{ medico.nome }}</p>
+            </div>
+          </div>
+
+          <!-- Exames -->
+          <h4 class="mt-3">Grupo: {{ grupo.group }}</h4>
+          <table class="table table-bordered mt-2">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Lateralidade</th>
+                <th>Comentário</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="exame in grupo.exames" :key="exame.id">
+                <td>{{ exame.name }}</td>
+                <td>{{ exame.laterality }}</td>
+                <td>{{ exame.comment }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Rodapé -->
+          <div class="footer mt-5">
+            <p>{{ dataExtenso }}</p>
+            <p>{{ medico.nome }} - CRM: {{ medico.crm }}</p>
+          </div>
+
+          <div class="page-break"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import html2pdf from "html2pdf.js";
+
+export default {
+  data() {
+    return {
+      paciente: {
+        nome: "João da Silva",
+        cpf: "123.456.789-00",
+      },
+      medico: {
+        nome: "Dra. Maria Oliveira",
+        crm: "CRM-SP 123456",
+      },
+      logoUrl: "images/eyelogo.jpg",
+      pacotes: [
+        {
+          id: 1,
+          name: "Pacote Simples",
+          observations: "teste simples",
+          exames: [
+            {
+              id: 1,
+              name: "Fundo de Olho",
+              laterality: "OD",
+              comment: "Exame de rotina",
+              group: "Individual",
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: "Pacote Simples",
+          observations: "teste simples",
+          exames: [
+            {
+              id: 2,
+              name: "Fundo de Olho",
+              laterality: "OE",
+              comment: "Exame de rotina",
+              group: "Grupo 1",
+            },
+          ],
+        },
+        {
+          id: 3,
+          name: "Pacote Simples",
+          observations: "teste simples",
+          exames: [
+            {
+              id: 2,
+              name: "Fundo SSSSS",
+              laterality: "OD",
+              comment: "Exame de rotina",
+              group: "Grupo 1",
+            },
+          ],
+        },
+        {
+          id: 4,
+          name: "Pacote Simples",
+          observations: "teste simples",
+          exames: [
+            {
+              id: 2,
+              name: "TESTSTE  TESTE",
+              laterality: "OD",
+              comment: "Exame de rotina",
+              group: "Grupo 1",
+            },
+          ],
+        },
+      ],
+    };
+  },
+  computed: {
+    dataExtenso() {
+      return new Date().toLocaleDateString("pt-BR", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    },
+  },
+  methods: {
+    agruparExames(exames) {
+      const grupos = [];
+      exames.forEach((exame) => {
+        if (exame.group === "Individual") {
+          grupos.push({ group: "Individual", exames: [exame] });
+        } else {
+          let grupo = grupos.find((g) => g.group === exame.group);
+          if (!grupo) {
+            grupo = { group: exame.group, exames: [] };
+            grupos.push(grupo);
+          }
+          grupo.exames.push(exame);
+        }
+      });
+      return grupos;
+    },
+    gerarPDF() {
+      const element = document.getElementById("pdf-content");
+      element.style.display = "block";
+      html2pdf()
+        .set({
+          margin: 10,
+          filename: "pacotes_exames.pdf",
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .from(element)
+        .save()
+        .then(() => {
+          element.style.display = "none";
+        });
+    },
+  },
+};
+</script>
+
+<style scoped>
+.pagina-pdf {
+  page-break-after: always;
+  padding: 20px;
+  font-size: 12px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+}
+
+.footer {
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+  font-size: 10px;
+  text-align: right;
+}
+
+.page-break {
+  page-break-after: always;
+}
+</style>
