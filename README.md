@@ -4,16 +4,16 @@
 copie .env_copia para .env
 
 ## LARAVEL
-composer install
-npm install
-php artisan server
-php artisan migrate
-php artisan db:seed
+/composer install
+/npm install
+/php artisan server
+/php artisan migrate
+/php artisan db:seed
 
 
 ## DOCKER
-docker-compose up --build
-docker compose exec app php artisan migrate --seed
+/docker-compose up --build
+/docker compose exec app php artisan migrate --seed
 
 ## APIS (routes/api.php)
 ## campos requeridos do banco
@@ -36,5 +36,5 @@ laravel 10 + Inertia
 Node 20
 
 ## Bruno de Lima
-## 11 9 1210 1715
-## brunodsstudio@gmail.com
+# 11 9 1210 1715
+# brunodsstudio@gmail.com
