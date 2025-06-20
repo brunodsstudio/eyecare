@@ -1,5 +1,7 @@
 FROM php:8.2-cli
 
+ARG NODE_VERSION=22.0.0
+
 # Instala dependências do sistema
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -15,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Instala Node.js (para Vite)
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
     apt-get install -y nodejs
 
 # Define diretório de trabalho
@@ -26,7 +28,7 @@ COPY . .
 COPY .env .env
 COPY  package.json pnpm-lock.yaml ./
 
-RUN npm i -g npm@latest; \
+RUN npm i -g npm@20; \
  # Install pnpm
  npm install -g pnpm; \
  pnpm --version; \
@@ -37,12 +39,12 @@ RUN npm i -g npm@latest; \
 
 # Instala dependências PHP e JS
 RUN composer install
-RUN npm install && npm run dev
+RUN npm install && npm run build
 
 # Permissões
-RUN chown -R www-data:www-data /var/www
+#RUN chown -R www-data:www-data /var/www
 RUN chmod -R 775 /var/www/storage
 #RUN php artisan serve --host 0.0.0.0
 
 
-CMD ["php", "artisan", "serve", "--host=127.0.0.1", "--port=8000"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
