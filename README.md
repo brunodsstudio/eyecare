@@ -12,8 +12,8 @@ copie .env_copia para .env
 
 
 ## DOCKER
-/docker-compose up --build
-/docker compose exec app php artisan migrate --seed
+#docker-compose up --build
+#docker compose exec laravel_app php artisan migrate --seed
 
 ## APIS (routes/api.php)
 ## campos requeridos do banco
