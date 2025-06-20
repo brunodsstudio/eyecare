@@ -1,6 +1,6 @@
 <template>
     <div v-if="mostrar">
-    <div id="pdf-content" style="display: none">
+    <div id="pdf-content" style="display: block">
       <!-- Página de cabeçalho do pacote -->
       <div class="pagina-pdf">
         <div class="header">
@@ -22,7 +22,7 @@
           <p>{{ dataExtenso }}</p>
           <p>{{ medico.nome }} - CRM: {{ medico.crm }}</p>
         </div>
-        <div class="page-break"></div>
+      
       </div>
 
       <!-- Grupos -->
@@ -120,6 +120,11 @@ import html2pdf from "html2pdf.js";
 export default {
   name: "PdfPacote",
   props: ["mostrar", "dados", "paciente", "medico", "logoUrl"],
+  data() {
+    return {
+      printed:false
+    }
+  },
   
   computed: {
     dataExtenso() {
@@ -132,15 +137,12 @@ export default {
     },
   },
   watch: {
-    mostrar(val) {
-      console.log(val)
-     if (val) this.gerarPDF();
-    },
+    
   },
   methods: {
     gerarPDF() {
       const el = document.getElementById("pdf-content");
-      //el.style.display = "block";
+      el.style.display = "block";
       //const el = $("#pdf-content")
       //$("#pdf-content").css('display', "block")
       html2pdf()
@@ -153,11 +155,15 @@ export default {
         .from(el)
         .save()
         .then(() => {
+          this.printed = true
           this.$emit("fechar");
         });
     }
   }, created(){
-    if(this.mostrar) this.gerarPDF();
+   // console.log(this.mostrar)
+   if(!this.printed){
+    if(this.dados) this.gerarPDF();
+   }
   } 
 };
 </script>

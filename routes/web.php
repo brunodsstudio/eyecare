@@ -33,7 +33,7 @@ Route::get('/Exames', function () {
     return Inertia::render('Exames');
 })->name('Exames'); 
 
-Route::get('/PrintPDF', function () {
+Route::get('/PrintPDF/{id}', function () {
     return Inertia::render('PrintPDF');
 })->name('PrintPDF');
 

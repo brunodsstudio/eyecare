@@ -23,6 +23,8 @@
         "bootstrap-vue": "^2.23.1",
         "html2pdf.js": "^0.10.3",
         "jquery": "^3.7.1",
+        "jspdf": "^3.0.1",
+        "jspdf-autotable": "^5.0.2",
         "sass": "^1.32.12",
         "vuetable-2": "2.0.0-beta.4",
         "vuetify": "^2.6.15",

@@ -1,176 +1,116 @@
 <template>
   <div>
-
-    <div id="pdf-content" style="display: block">
-      <!-- Página de cabeçalho do pacote -->
-      <div class="pagina-pdf">
-        <div class="header">
-          <img :src="logoUrl" style="width: 80px;" />
-          <div>
-            <h5>Paciente: {{ paciente.nome }}</h5>
-            <p>CPF: {{ paciente.cpf }}</p>
-            <p>Médico: {{ medico.nome }}</p>
-          </div>
-        </div>
-
-        <div class="mt-4">
-            
-          <h4>{{ dados.header.name }}</h4>
-          <p><strong>Observações:</strong> {{ dados.header.observations }}</p>
-          <p><strong>Data do Pacote:</strong> {{ dados.header.created_at }}</p>
-        </div>
-
-        <div class="footer mt-5">
-          <p>{{ dataExtenso }}</p>
-          <p><span class="nomemedico"  style="border-top: 1px black">{{ medico.nome }} - CRM: {{ medico.crm }}</span></p>
-        </div>
+    <div class="p-4 border rounded bg-white">
+    <!-- Cabeçalho -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h5><strong>Paciente:</strong> {{ paciente.nome }}</h5>
+        <p><strong>CPF:</strong> {{ paciente.cpf }}</p>
+        <p><strong>Doutor:</strong> {{ medico.nome }}</p>
       </div>
-
-      <!-- Página para cada grupo (exceto Exames Avulsos) -->
-      <div
-        v-for="(exames, grupo) in dados"
-        v-if="grupo !== 'header' && grupo !== 'Exames Avulsos'"
-        :key="grupo"
-        class="pagina-pdf"
-      >
-        <div class="header">
-          <img :src="logoUrl" style="width: 80px;" />
-          <div>
-            <h5>Paciente: {{ paciente.nome }}</h5>
-            <p>CPF: {{ paciente.cpf }}</p>
-            <p>Médico: {{ medico.nome }}</p>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <h4>{{ grupo }}</h4>
-          <table class="table table-bordered mt-2">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Lateralidade</th>
-                <th>Comentário</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(exame, key) in exames" :key="key">
-                <td>{{ exame.id }}</td>
-                <td>{{ exame.laterality }}</td>
-                <td>{{ exame.comment }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="footer mt-5">
-          <p>{{ dataExtenso }}</p>
-          <p>{{ medico.nome }} - CRM: {{ medico.crm }}</p>
-        </div>
-        <div class="page-break"></div>
-      </div>
-
-      <!-- Página para cada exame avulso -->
-      <div
-        v-for="(exame, key) in dados['Exames Avulsos']"
-        :key="'avulso-' + key"
-        class="pagina-pdf"
-      >
-        <div class="header">
-          <img :src="logoUrl" style="width: 80px;" />
-          <div>
-            <h5>Paciente: {{ paciente.nome }}</h5>
-            <p>CPF: {{ paciente.cpf }}</p>
-            <p>Médico: {{ medico.nome }}</p>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <h4>Exame Avulso</h4>
-          <table class="table table-bordered mt-2">
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Lateralidade</th>
-                <th>Comentário</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ exame.id }}</td>
-                <td>{{ exame.laterality }}</td>
-                <td>{{ exame.comment }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="footer mt-5">
-          <p>{{ dataExtenso }}</p>
-          <p>{{ medico.nome }} - CRM: {{ medico.crm }}</p>
-        </div>
-        <div class="page-break"></div>
-      </div>
+      <img :src="logoUrl" alt="Logo" style="width: 100px; height: auto;" />
     </div>
+
+    <!-- Descrição do pacote -->
+    <div class="mb-4">
+      <h4>{{ dados.header.name }}</h4>
+      <p><strong>Observações:</strong> {{ dados.header.observations }}</p>
+      <p><strong>Criado em:</strong> {{ dados.header.created_at }}</p>
+    </div>
+
+    <!-- Grupos -->
+    <div v-for="(grupo, grupoKey) in dados" :key="grupoKey" v-if="grupoKey !== 'header'">
+      <h5 class="mt-4">{{ grupoKey }}</h5>
+      <b-table striped hover small :items="formatarExames(grupo)" :fields="camposTabela" class="mt-2" />
+    </div>
+
+    <!-- Rodapé -->
+    <div class="mt-5 border-top pt-3 text-right text-muted small">
+      <p>{{ dataExtenso }}</p>
+      <p>{{ medico.nome }} - {{ medico.crm }}</p>
+    </div>
+  </div>
+
+    <PDFJsPacote
+      v-if="mostrar"
+      :id-pacote="idSelecionado"
+      @fechar="mostrar = false"
+    />
   </div>
 </template>
 
 <script>
-import html2pdf from "html2pdf.js";
+import PDFJsPacote from "../Components/PDFJsPacote.vue";
 
 export default {
-    props: {
-        pacoteid:Number,
-    }, 
+  components: { PDFJsPacote },
   data() {
     return {
-      paciente: {
-        nome: "João da Silva",
-        cpf: "123.456.789-00",
-      },
-      medico: {
-        nome: "Dra. Maria Oliveira",
-        crm: "CRM-SP 123456",
-      },
-      logoUrl: "images/eyelogo.jpg",
-      dados: {
-        header: {
-          name: "Pacote Simples",
-          observations: "teste simples",
-          created_at: "2025-06-13 15:23:47",
+    logo:null,
+        mostrar: true,
+        idSelecionado: null,
+        paciente: {
+          nome: "João da Silva",
+          cpf: "123.456.789-00",
         },
-        "Exames Avulsos": {
-          3: {
-            id: "Biometria",
-            laterality: "OE",
-            comment: "BIometria",
-          },
-          11: {
-            id: "Paquimetria",
-            laterality: "AO",
-            comment: "Paquimetria",
-          },
+        medico: {
+          nome: "Dra. Maria Oliveira",
+          crm: "CRM-SP 123456",
         },
-        "Grupo 1": {
-          1: {
-            id: "Fundo de Olho",
-            laterality: "OD",
-            comment: "Exame de rotina",
-          },
-          14: {
-            id: "Mapeamento de retina",
-            laterality: "OE",
-            comment: "Mapeamento de retina",
-          },
-          4: {
-            id: "Campimetria",
-            laterality: "OE",
-            comment: "Campimetria",
-          },
-        },
-      },
-    };
+        camposTabela: [
+        { key: "nome", label: "Nome" },
+        { key: "laterality", label: "Lateralidade" },
+        { key: "comment", label: "Comentário" },
+        ],
+        logoUrl: "http://"+window.location.host + "/images/eyelogo.jpg",
+        dados:null,
+
+      }
   },
-  computed: {
+  methods: {
+    abrirPdf(id) {
+      this.idSelecionado = id;
+      this.mostrar = true;
+    },
+    makeToast(variant = null, msg) {
+        this.$bvToast.toast(msg, {
+          title: `Exames`,
+          variant: variant,
+          solid: true
+        })
+      },
+    formatarExames(grupo) {
+      return Object.values(grupo).map((exame) => ({
+        nome: exame.id,
+        laterality: exame.laterality,
+        comment: exame.comment,
+      }));
+    },
+    async carregarPdf(idPacote) {
+      try {
+        if(undefined !== idPacote){
+          const response = await axios.get("/api/printpacote/"+ idPacote);
+          this.dados = await response.data;
+          this.makeToast("success", "Pacote Impresso com sucesso!")
+        }
+      } catch (err) {
+        console.error("Erro ao carregar PDF do pacote:", err);
+        this.makeToast("danger", "erro ao buscar informaçoes!: " + err)
+      }
+    },
+  }, mounted(){
+
+    const urlPath = window.location.pathname; // Example: "/blog/2023/article-title/"
+    const segments = urlPath.split('/').filter(segment => segment); // Filter out empty strings
+    const lastSegment = segments[segments.length - 1]; 
+
+    this.idSelecionado = lastSegment
+
+    this.carregarPdf(lastSegment);
+
+    
+
+  },computed: {
     dataExtenso() {
       return new Date().toLocaleDateString("pt-BR", {
         weekday: "long",
@@ -179,66 +119,6 @@ export default {
         day: "numeric",
       });
     },
-  },
-  methods: {
-    async carregarpacote() {
-      try {
-        const res = await axios.get("/api/exames/"+ pacoteid);
-        this.exames = res.data;
-      } catch (err) {
-        console.error("Erro ao buscar exames:", err);
-        // Fallback para teste:
-        
-      }
-    },
-    gerarPDF() {
-      const element = document.getElementById("pdf-content");
-      element.style.display = "block";
-      html2pdf()
-        .set({
-          margin: 10,
-          filename: "pacote_formatado.pdf",
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(element)
-        .save()
-        .then(() => {
-          element.style.display = "none";
-        });
-    },
-  },
-  mounted: function(){
-    gerarPDF();
   }
 };
 </script>
-
-<style scoped>
-.nomemedico {
-    border-top: 1px black ;
-}
-.pagina-pdf {
-  page-break-after: always;
-  padding: 20px;
-  font-size: 12px;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 10px;
-}
-
-.footer {
-  border-top: 1px solid #ccc;
-  padding-top: 10px;
-  font-size: 10px;
-  text-align: right;
-}
-
-.page-break {
-  page-break-after: always;
-}
-</style>

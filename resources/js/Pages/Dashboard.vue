@@ -2,18 +2,20 @@
 import DefaultLayout from '@/Layouts/DefaultLayout.vue';
 import { Head } from '@inertiajs/vue2';
 import PdfPacote from "../Components/PDFPacote.vue";
+import PDFJsPacote from "../Components/PDFJsPacote.vue";
 
 </script>
 
 
 <script>
 export default {
-  components: { PdfPacote },
+  components: { PdfPacote, PDFJsPacote},
   data() {
     return {
         examesDrop:[],
         examesDropAvulsos:[],
         examesDisable: true,
+        idSelecionado:null,
         addExameId:null,
         filtro: "",
         exameAvulso :null,
@@ -243,11 +245,19 @@ export default {
     async carregarPdf(idPacote) {
       try {
         const response = await axios.get("/api/printpacote/"+ idPacote);
-        this.pacoteSelecionado = response.data;
+        this.pacoteSelecionado = await response.data;
         this.mostrarPdf = true;
+        this.makeToast("success", "Pacote Impresso com sucesso!")
       } catch (err) {
         console.error("Erro ao carregar PDF do pacote:", err);
+        this.makeToast("danger", "erro ao buscar informaçoes!: " + err)
       }
+    },
+
+    async carregarPdf2(idPacote) {
+      this.idSelecionado = idPacote;
+      //console.log(idPacote)
+      this.mostrarPdf = true;
     },
     fecharPdf() {
       this.mostrarPdf = false;
@@ -258,9 +268,11 @@ export default {
     },
     escondeDropExames(){
             this.examesDisable = true
+    }, popup(id){
+            open('/PrintPDF/'+id, 'popup-example', 'height='+800+',width='+600+'resizable=no')
     }
     }
-    ,created() {
+    ,mounted() {
         this.buscarpacotes();
     },
 
@@ -287,8 +299,8 @@ export default {
         <div>
             <b-button-toolbar aria-label="Toolbar with button groups and dropdown menu">
                 <b-button-group class="mx-1">
-                    <b-button variant="primary" @click="abrirModalCriacaoPacoteA">+ Exame Avulso</b-button>
-                    <b-button variant="success" @click="abrirModalCriacaoPacote">+ Pacote composto</b-button>
+                    <b-button variant="primary" @click="abrirModalCriacaoPacoteA"><b-icon-file-plus></b-icon-file-plus> Exame Avulso</b-button>
+                    <b-button variant="success" @click="abrirModalCriacaoPacote"><b-icon-file-plus></b-icon-file-plus> Pacote composto</b-button>
                 </b-button-group>
             </b-button-toolbar>
            
@@ -308,25 +320,29 @@ export default {
       <b-card>
 
         <b-button v-if="pacote.name !== 'Avulso'" variant="success" size="sm" class="mt-2" @click="abrirModalAddExame(pacote.id)">
-            + Adicionar Exame ao Pacote
+           <b-icon-file-plus></b-icon-file-plus> Adicionar Exame ao Pacote
         </b-button> 
        <span >&nbsp;</span>
+
          <b-button 
-                variant="success"
-                size="sm" 
-                class="mt-2"
-                @click="carregarPdf(pacote.id)">Imprimir PDF
+              size="sm"
+              variant="primary"
+              class="mt-2"
+              @click="popup(pacote.id)"
+            > <b-icon-file-earmark-pdf></b-icon-file-earmark-pdf>
+             Imprimir PDF
             </b-button><span >&nbsp;</span>
+
          <b-button 
               size="sm"
               variant="danger"
               class="mt-2"
               @click="excluirPacoteModal(pacote.id, pacote.name)"
-            >
+            > <b-icon-trash></b-icon-trash>
               Excluir Pacote
-            </b-button>
+            </b-button> 
            
-        <PdfPacote
+         <PdfPacote
                 v-if="pacoteSelecionado"
                 :mostrar="mostrarPdf"
                 :dados="pacoteSelecionado"
@@ -334,7 +350,9 @@ export default {
                 :medico="medico"
                 :logoUrl="logoUrl"
                 @fechar="fecharPdf"
-                />
+                /> 
+
+                
         <br> <br>
 
         <h4>{{ pacote.name }} - {{ pacote.id }}</h4>
@@ -356,7 +374,7 @@ export default {
               variant="danger"
               class="ml-2"
               @click="excluirExame(pacote.id, row.item)"
-            >
+            > <b-icon-trash></b-icon-trash> 
               Excluir
             </b-button>
 
@@ -365,13 +383,19 @@ export default {
               variant="danger"
               class="ml-2"
                @click="excluirPacoteModal(pacote.id, pacote.name)"
-            >
+            > <b-icon-trash></b-icon-trash>  
               Excluir
             </b-button>
            
           </template>
         </b-table>
       </b-card>
+
+        <PDFJsPacote
+                v-if="mostrarPdf"
+                :id-pacote="idSelecionado"
+                @fechar="mostrar = false"
+        />
 
 
         <b-modal
